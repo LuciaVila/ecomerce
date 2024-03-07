@@ -1,0 +1,18 @@
+.my-custom-btn{
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin: 1;
+  border: 1;
+  margin-right: 10px;
+}
+
+.cart-icon {
+    height: 40px; 
+    margin-left: 1px;
+    width: 30px;
+  }
+
+  .cart-number{
+    margin-left: 5px;
+  }

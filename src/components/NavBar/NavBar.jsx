@@ -6,7 +6,7 @@ const NavBar = () => {
             <div className="container">
                 <a className="navbar-brand" href="#">EleganciaVaronil</a>
             </div>
-            <div className="container">
+            <div className="container" style={{marginRight:80}}>
                 <button className="btn btn-outline-success">Contactos</button>
                 <button className="btn btn-outline-success">Politica de cambio</button>
                 <button className="btn btn-outline-success">Guia de talles</button>
