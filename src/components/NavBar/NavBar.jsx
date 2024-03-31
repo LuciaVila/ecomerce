@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import CarWidget from "../CartWidget/CartWidget";
+import CartWidget from "../CartWidget/CartWidget";
 
 const NavBar = () => {
     const [categoriasDesplegado, setCategoriasDesplegado] = useState(false);
@@ -25,7 +25,7 @@ const NavBar = () => {
                         <li><NavLink to={"/category/Boxer"} className="btn btn-outline-success">Boxer</NavLink></li>
                         <li><NavLink to={"/category/Pack"}  className="btn btn-outline-success">Pack</NavLink></li>
                     </div>
-                    <CarWidget />
+                    <CartWidget />
 
                 </div>
             </div>
