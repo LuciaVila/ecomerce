@@ -1,28 +1,40 @@
 import { useEffect, useState } from "react"
-import { getProducts, getProductsByCategory } from "../../asyncMock"
 import ItemList from "../ItemLIst/ItemList"
 import { useParams } from "react-router-dom"
+import { useNotification } from "../../Context/Notification";
+import { db } from "../../services/firebase/Index"
+import { collection, getDocs, query, where } from 'firebase/firestore';
+
 
 const ItemListContainer = ({ greeting }) => {
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
     const { categoryId } = useParams()
+    const { setNotification } = useNotification();
 
     useEffect(() => {
         setLoading(true)
-        const asyncFunc = categoryId ? getProductsByCategory : getProducts;
+        const collectionRef = categoryId
+            ? query(collection(db, "products"), where("category", "==", categoryId))
+            : collection(db, "products")
 
-        asyncFunc(categoryId)
+        getDocs(collectionRef)
             .then((response) => {
-                setProducts(response)
+                console.log(response)
+                const products = response.docs.map((doc) => {
+                    return { id: doc.id, ...doc.data() };
+                })
+                setProducts(products);
             })
             .catch((error) => {
+                setNotification("danger", `No es posible cargar los productos`);
                 console.log(error)
             })
             .finally(() => {
-                setLoading(false)
-            })
-    }, [categoryId])
+                setLoading(false);
+            });
+
+    }, [categoryId, setNotification])
 
     if (loading) {
         return <h1>Cargando productos...</h1>
