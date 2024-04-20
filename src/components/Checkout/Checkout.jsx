@@ -1,12 +1,13 @@
 import { useState } from "react"
 import { useCart } from '../../Context/CartContext.jsx';
 import { db } from "../../services/firebase/Index.js"
+import CheckoutForm from "./CheckoutForm";
 
 import { addDoc, collection, documentId, getDocs, query, where, writeBatch } from "firebase/firestore";
 
 const Checkout = () => {
     const [loading, setLoading] = useState(false);
-    const [orderCreated, setOrderCreated] = useState(false);
+    const [orderId, setOrderId] = useState('');
 
     const { cart, totalQuantity, getTotal, clearCart } = useCart();
     const total = getTotal()
@@ -43,13 +44,13 @@ const Checkout = () => {
                 const stockDB = dataDoc.stock;
 
                 const productAddedToCart = cart.find((prod) => prod.id === doc.id);
-                const prodQuantity = productAddedToCart?.quantity
+                const prodQuantity = productAddedToCart?.quantity;
 
                 if (stockDB >= prodQuantity) {
 
-                    batch.update(doc.ref, { stock: stockDB - prodQuantity })
+                    batch.update(doc.ref, { stock: stockDB - prodQuantity });
                 } else {
-                    outOfStock.push({ id: doc.id, ...dataDoc })
+                    outOfStock.push({ id: doc.id, ...dataDoc });
                 }
             });
 
@@ -58,38 +59,36 @@ const Checkout = () => {
 
                 const orderRef = collection(db, "orders");
                 const orderAdded = await addDoc(orderRef, objOrder);
-                console.log(`El id de su orden es: ${orderAdded.id}`);
-                clearCart()
-                setOrderCreated(true)
+                clearCart();
+                setOrderId(orderAdded.id);
+                console.log("orderRef:", orderRef);
+                console.log("orderAdded:", orderAdded);
 
             } else {
-                console.log("Hay productos que estan fuera de stock")
+                console.log("Hay productos que estan fuera de stock");
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     }
 
     if (loading) {
-        return <h1>Se esta generando su orden</h1>
+        return <h1>Se está generando su orden</h1>
     }
 
-    if (orderCreated) {
-        return (
-            <h1>
-                La orden fue creada correctamente
-            </h1>
-        )
+    if (orderId) {
+        return <h1>El id de su orden es: {orderId}</h1>;
     }
 
     return (
         <>
             <h1>Checkout</h1>
-            <button className="Otion" onClick={createOrder}>Generar Orden</button>
+            <CheckoutForm onConfirm={createOrder} ></CheckoutForm>
         </>
     )
+
 }
 
 export default Checkout

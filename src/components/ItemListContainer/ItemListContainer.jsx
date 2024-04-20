@@ -1,10 +1,10 @@
+import './ItemListContainer.css'
 import { useEffect, useState } from "react"
 import ItemList from "../ItemLIst/ItemList"
 import { useParams } from "react-router-dom"
 import { useNotification } from "../../Context/Notification";
 import { db } from "../../services/firebase/Index"
 import { collection, getDocs, query, where } from 'firebase/firestore';
-
 
 const ItemListContainer = ({ greeting }) => {
     const [products, setProducts] = useState([])
@@ -28,7 +28,7 @@ const ItemListContainer = ({ greeting }) => {
             })
             .catch((error) => {
                 setNotification("danger", `No es posible cargar los productos`);
-                console.log(error)
+                return(error)
             })
             .finally(() => {
                 setLoading(false);
@@ -41,7 +41,7 @@ const ItemListContainer = ({ greeting }) => {
     }
 
     return (
-        <div>
+        <div className="ItemListContainer">
             <h1>{greeting}</h1>
             <ItemList products={products} />
         </div>
